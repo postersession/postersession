@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
-<h1>Recent posters</h1>
-
-{% if poster_list %}
-    <ul>
-    {% for poster in poster_list %}
-        <li><a href="{% url 'detail' poster.id %}">{{ poster.title }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No posters are available.</p>
-{% endif %}
+{% block content %}
+    <h1>Recent posters</h1>
+    {% if poster_list %}
+        <ul>
+        {% for poster in poster_list %}
+            <li><a href="{% url 'detail' poster.id %}">{{ poster.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posters are available.</p>
+    {% endif %}
+{% endblock %}
