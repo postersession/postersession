@@ -39,7 +39,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///django_quick_start'),
+    #'default': env.db('DATABASE_URL', default='postgres:///django_quick_start'),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': ROOT_DIR.path('db.sqlite')
+    }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
