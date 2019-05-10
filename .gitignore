@@ -280,8 +280,9 @@ pip-selfcheck.json
 
 ### Project template
 
-django_quick_start/media/
+*/media/
 
 .pytest_cache/
 
-
+db.sqlite
+*/migrations/*

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from django_quick_start.users.views import (
+from posters.users.views import (
     user_list_view,
     user_redirect_view,
     user_update_view,

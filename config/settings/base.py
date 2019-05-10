@@ -4,8 +4,8 @@ Base settings to build other settings files upon.
 
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3  # (django_quick_start/config/settings/base.py - 3 = django_quick_start/)
-APPS_DIR = ROOT_DIR.path('django_quick_start')
+ROOT_DIR = environ.Path(__file__) - 3  # (posters/config/settings/base.py - 3 = posters/)
+APPS_DIR = ROOT_DIR.path('posters')
 
 env = environ.Env()
 
@@ -39,11 +39,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    #'default': env.db('DATABASE_URL', default='postgres:///django_quick_start'),
+    #'default': env.db('DATABASE_URL', default='postgres:///posters'),
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': ROOT_DIR.path('db.sqlite')
+        #'NAME': ROOT_DIR.path('db.sqlite'),
+        'NAME': 'db.sqlite',
     }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
@@ -75,8 +76,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
 ]
 LOCAL_APPS = [
-    'django_quick_start.users.apps.UsersAppConfig',
-    # Your stuff: custom apps go here
+    'posters.apps.PostersConfig',
+    'posters.users.apps.UsersAppConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -85,7 +86,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
 MIGRATION_MODULES = {
-    'sites': 'django_quick_start.contrib.sites.migrations'
+    'sites': 'posters.contrib.sites.migrations'
 }
 
 # AUTHENTICATION
@@ -247,9 +248,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = 'django_quick_start.users.adapters.AccountAdapter'
+ACCOUNT_ADAPTER = 'posters.users.adapters.AccountAdapter'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = 'django_quick_start.users.adapters.SocialAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'posters.users.adapters.SocialAccountAdapter'
 
 
 # Your stuff...
