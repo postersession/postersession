@@ -7,7 +7,8 @@ from .models import Poster
 #TODO: change to generic views
 
 def index(request):
-    poster_list = Poster.objects.order_by('-pub_date')
+    #poster_list = Poster.objects.order_by('-pub_date')
+    poster_list = Poster.objects.prefetch_related('authors')
     context = {'poster_list': poster_list}
     return render(request, 'pages/index.html', context)
 
