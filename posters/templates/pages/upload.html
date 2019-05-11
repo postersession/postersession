@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h3>Poster upload: {{ poster.title }}</h3>
+  <p>
+    {% for author in poster.authors.all %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}.
+  </p>
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+    {% csrf_token %}
+    {{ form.as_p }}
+    </div>
+    <div class="form-group">
+    <button type="submit">Upload</button>
+    </div>
+  </form>
+
+  <p><a href="{% url 'home' %}">Return to overview</a></p>
+{% endblock %}

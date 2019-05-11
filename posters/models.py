@@ -25,10 +25,12 @@ class Author(models.Model):
 class Poster(models.Model):
     title = models.CharField(max_length=256)
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField('date published', default=date.today)
     authors = models.ManyToManyField(Author)
     access_key = models.CharField(max_length=256, unique=True)
     file_id = models.CharField(max_length=80, blank=True)
+    pdf = models.FileField(upload_to='pdf/')
     external_id = models.CharField(max_length=80, blank=True)
     active = models.BooleanField(default=False)
 

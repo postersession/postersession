@@ -8,12 +8,6 @@ import posters
 
 urlpatterns = [
     #path("", TemplateView.as_view(template_name="pages/index.html"), name="home"),
-    path(
-        "about/",
-        TemplateView.as_view(template_name="pages/about.html"),
-        name="about",
-    ),
-    #path('posters/', include('posters.urls')),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
@@ -24,7 +18,8 @@ urlpatterns = [
     #path("accounts/", include("allauth.urls")),
     #
     path('', include('posters.urls')),
-    path('poster/', include('posters.urls')),
+    #path('upload/<int:access_key>/', posters.views.upload, name='upload'),
+    #path('upload/', include('posters.urls')),
     #
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
