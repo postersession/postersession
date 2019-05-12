@@ -180,4 +180,5 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 # pdf conversion
-from .secret import ILPDF_KEY
+ILPDF_KEY = env('ILPDF_KEY')
+

@@ -1,7 +1,8 @@
 from django.db import models
 from datetime import date
 from django.utils import timezone
-from validatedfile.fields import ValidatedFileField
+from constrainedfilefield.fields import ConstrainedFileField
+
 
 from .tasks import generate_preview
 
@@ -37,7 +38,7 @@ class Poster(models.Model):
     active = models.BooleanField(default=False)
     preview_small = models.ImageField(blank=True, upload_to='jpeg/')
     preview_large = models.ImageField(blank=True, upload_to='jpeg/')
-    pdf = ValidatedFileField(
+    pdf = ConstrainedFileField(
                     blank=True,
                     upload_to='pdf/',
                     max_upload_size=10240000,
