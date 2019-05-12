@@ -19,5 +19,5 @@ djangorestframework==3.9.0  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
 
 # Posters specific
--e git@github.com:postersession/pylovepdf.git
+-e git://github.com/postersession/pylovepdf.git#egg=pylovepdf
 django-constrainedfilefield[filetype]==3.2.0
