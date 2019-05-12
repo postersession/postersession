@@ -62,3 +62,5 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# pdf conversion
+from .secret import ILPDF_KEY

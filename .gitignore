@@ -286,3 +286,4 @@ pip-selfcheck.json
 
 db.sqlite
 */migrations/*
+config/settings/secret.py

@@ -178,3 +178,6 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# pdf conversion
+from .secret import ILPDF_KEY

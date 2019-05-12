@@ -1,6 +1,10 @@
 from django.db import models
 from datetime import date
 from django.utils import timezone
+from validatedfile.fields import ValidatedFileField
+
+from .tasks import generate_preview
+
 
 
 class Conference(models.Model):
@@ -16,10 +20,10 @@ class Conference(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=256)
-    email = models.EmailField(unique=True, blank=True)
+    email = models.EmailField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return self.name + ' <' + self.email + '>'
+        return self.name + ' <' + str(self.email) + '>'
 
 
 class Poster(models.Model):
@@ -29,10 +33,18 @@ class Poster(models.Model):
     pub_date = models.DateField('date published', default=date.today)
     authors = models.ManyToManyField(Author)
     access_key = models.CharField(max_length=256, unique=True)
-    file_id = models.CharField(max_length=80, blank=True)
-    pdf = models.FileField(upload_to='pdf/')
     external_id = models.CharField(max_length=80, blank=True)
     active = models.BooleanField(default=False)
+    preview_small = models.ImageField(blank=True, upload_to='jpeg/')
+    preview_large = models.ImageField(blank=True, upload_to='jpeg/')
+    pdf = ValidatedFileField(
+                    blank=True,
+                    upload_to='pdf/',
+                    max_upload_size=10240000,
+                    content_types=['application/pdf'])
+
+    def generate_preview(self):
+        generate_preview(self)
 
     def __str__(self):
         return self.title + ' (' + self.conference.name + ')'

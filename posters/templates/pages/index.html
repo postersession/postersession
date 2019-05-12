@@ -7,8 +7,8 @@
         <div class="col-md-8">
             <div class="row">
             {% for poster in poster_list %}
-                <a href="https://unsplash.it/1200/768.jpg?image=251" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4" data-title="{{ poster.title }}" data-footer="{% for author in poster.authors.all %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp; <a href=''>Download PDF</a>">
-                    <img src="https://unsplash.it/600.jpg?image=251" class="img-fluid">
+                <a href="{{ poster.preview_large.url }}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4" data-title="{{ poster.title }}" data-footer="{% for author in poster.authors.all %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}<a href='{{ poster.pdf.url }}'>Download PDF</a>{% endif %}">
+                    <img src="{{ poster.preview_small.url }}" class="img-fluid">
                 </a>
             {% endfor %}
             </div>

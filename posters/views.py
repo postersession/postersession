@@ -9,7 +9,7 @@ from .forms import PDFForm
 
 def index(request):
     #poster_list = Poster.objects.order_by('-pub_date')
-    poster_list = Poster.objects.prefetch_related('authors')
+    poster_list = Poster.objects.filter(active=True).prefetch_related('authors')
     context = {'poster_list': poster_list}
     return render(request, 'pages/index.html', context)
 
@@ -24,7 +24,15 @@ def upload(request, access_key):
         form = PDFForm(request.POST, request.FILES, instance=poster)
         if form.is_valid():
             form.save()
+            try:
+                poster.generate_preview()
+            except:
+                #TODO notify admins about this case
+                return redirect('success-delayed')
+            poster.active = True
+            poster.save()
             return redirect('success')
     else:
         form = PDFForm(instance=poster)
+        form.active = False
     return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
