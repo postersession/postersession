@@ -5,7 +5,7 @@ import tempfile
 import os
 
 
-def generate_preview(poster, small=250, large=1200):
+def generate_preview(poster, small=300, large=1200):
 
     if not poster.pdf:
         raise ValueError('no pdf file available')
