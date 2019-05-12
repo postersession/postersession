@@ -4,10 +4,10 @@
     <h3>ICLR 2019 posters</h3>
     {% if poster_list %}
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="container">
             <div class="row">
             {% for poster in poster_list %}
-                <a href="{{ poster.preview_large.url }}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4" data-title="{{ poster.title }}" data-footer="{% for author in poster.authors.all %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}<a href='{{ poster.pdf.url }}'>Download PDF</a>{% endif %}">
+                <a href="{{ poster.preview_large.url }}" data-toggle="lightbox" data-gallery="example-gallery" class="col-md-3 mb-3" data-title="{{ poster.title }}" data-footer="{% for author in poster.authors.all %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}<a href='{{ poster.pdf.url }}'>Download PDF</a>{% endif %}">
                     <img src="{{ poster.preview_small.url }}" class="img-fluid">
                 </a>
             {% endfor %}
