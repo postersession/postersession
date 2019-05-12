@@ -15,7 +15,7 @@ def index(request):
 
 def detail(request, poster_id):
     poster = get_object_or_404(Poster, pk=poster_id)
-    authors = poster.authors
+    authors = poster.author_list()
     return render(request, 'pages/detail.html', {'poster': poster, 'authors': authors})
 
 def upload(request, access_key):

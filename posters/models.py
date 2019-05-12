@@ -7,7 +7,6 @@ from constrainedfilefield.fields import ConstrainedFileField
 from .tasks import generate_preview
 
 
-
 class Conference(models.Model):
     name = models.CharField(max_length=256)
     date_from = models.DateField(default=date.today)
@@ -32,7 +31,7 @@ class Poster(models.Model):
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField('date published', default=date.today)
-    authors = models.ManyToManyField(Author)
+    authors = models.ManyToManyField(Author, through='PosterAuthor')
     access_key = models.CharField(max_length=256, unique=True)
     external_id = models.CharField(max_length=80, blank=True)
     active = models.BooleanField(default=False)
@@ -44,9 +43,31 @@ class Poster(models.Model):
                     max_upload_size=10240000,
                     content_types=['application/pdf'])
 
+    def author_list(self):
+        return [obj.author for obj in PosterAuthor.objects.filter(poster=self).order_by('position')]
+
     def generate_preview(self):
         generate_preview(self)
 
     def __str__(self):
         return self.title + ' (' + self.conference.name + ')'
+
+
+class PosterAuthor(models.Model):
+    ''' represent author order '''
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    poster = models.ForeignKey(Poster, on_delete=models.CASCADE)
+    position = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        ''' automatically increment position on creation '''
+        if not self.pk: # object has not been saved yet
+            max_position = PosterAuthor.objects.filter(poster=self.poster).order_by('-position')
+            if max_position.exists():
+                self.position = max_position.all()[0].position + 1
+        super(PosterAuthor, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['position']
+
 
