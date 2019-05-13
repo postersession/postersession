@@ -45,9 +45,9 @@ class Migration(migrations.Migration):
                 ('access_key', models.CharField(max_length=256, unique=True)),
                 ('external_id', models.CharField(blank=True, max_length=80)),
                 ('active', models.BooleanField(default=False)),
-                ('preview_small', models.ImageField(blank=True, upload_to=unique_upload.unique_upload.unique_upload)),
-                ('preview_large', models.ImageField(blank=True, upload_to=unique_upload.unique_upload.unique_upload)),
-                ('pdf', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['application/pdf'], max_upload_size=10240000, mime_lookup_length=4096, upload_to=unique_upload.unique_upload.unique_upload)),
+                ('preview_small', models.ImageField(blank=True, upload_to=unique_upload.unique_upload)),
+                ('preview_large', models.ImageField(blank=True, upload_to=unique_upload.unique_upload)),
+                ('pdf', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['application/pdf'], max_upload_size=10240000, mime_lookup_length=4096, upload_to=unique_upload.unique_upload)),
             ],
         ),
         migrations.CreateModel(
