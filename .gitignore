@@ -285,5 +285,4 @@ pip-selfcheck.json
 .pytest_cache/
 
 db.sqlite
-*/migrations/*
 config/settings/secret.py
