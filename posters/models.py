@@ -64,6 +64,8 @@ class PosterAuthor(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     poster = models.ForeignKey(Poster, on_delete=models.CASCADE)
     position = models.IntegerField(default=0)
+    exclude = models.BooleanField(default=False)
+    email_sent = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         ''' automatically increment position on creation '''

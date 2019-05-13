@@ -17,3 +17,5 @@ admin.site.register(Conference)
 admin.site.register(Author)
 admin.site.register(PosterAuthor)
 admin.site.register(Poster, PosterAdmin)
+
+admin.site.site_header = 'Postersession.ai Administration'
