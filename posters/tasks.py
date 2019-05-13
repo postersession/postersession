@@ -13,12 +13,17 @@ def generate_preview(poster, small=300, large=1200):
     from PIL import Image
     from pylovepdf.tools.pdftojpg import PdfToJpg
 
-    t = PdfToJpg(settings.ILPDF_KEY, verify_ssl=True, proxies=None)
-    t.add_file(poster.pdf.path)
-    t.pdfjpg_mode = 'pages'
-    t.debug = False
-
     with tempfile.TemporaryDirectory() as path:
+        t = PdfToJpg(settings.ILPDF_KEY, verify_ssl=True, proxies=None)
+
+        pdf_path = os.path.join(path, 'poster.pdf')
+        with open(pdf_path, 'wb') as f:
+            f.write(poster.pdf.read())
+
+        t.add_file(pdf_path)
+        t.pdfjpg_mode = 'pages'
+        t.debug = False
+
         t.set_output_folder(path)
         t.execute()
         t.download()
