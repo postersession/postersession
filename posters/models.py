@@ -3,8 +3,8 @@ from datetime import date
 from django.utils import timezone
 from constrainedfilefield.fields import ConstrainedFileField
 from unique_upload import unique_upload
-
 from .tasks import generate_preview
+from .utils.slugify import unique_slugify
 
 
 class Conference(models.Model):
@@ -28,6 +28,7 @@ class Author(models.Model):
 
 class Poster(models.Model):
     title = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=40, unique=True, blank=True)
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField('date published', default=date.today)
@@ -48,6 +49,11 @@ class Poster(models.Model):
 
     def generate_preview(self):
         generate_preview(self)
+
+    def save(self, *args, **kwargs):
+        if not self.pk: # only create slug the first time the object is saved
+            unique_slugify(self, self.title)
+        super(Poster, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title + ' (' + self.conference.name + ')'

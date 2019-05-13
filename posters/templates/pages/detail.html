@@ -2,9 +2,7 @@
 
 {% block content %}
 <h1>{{ poster.title }}</h1>
-<ul>
-{% for author in authors.all %}
-    <li>{{ author.name }}</li>
-{% endfor %}
-</ul>
+<p>{% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}(<a href='{{ poster.pdf.url }}'>PDF</a>){% endif %}</p>
+
+{% if poster.preview_large %}<img src="{{ poster.preview_large.url }}" class="img-fluid">{% endif %}
 {% endblock %}
