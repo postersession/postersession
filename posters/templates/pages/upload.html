@@ -5,15 +5,46 @@
   <p>
     {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}.
   </p>
-  <form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" id="upload">
     <div class="form-group">
     {% csrf_token %}
     {{ form.as_p }}
     </div>
     <div class="form-group">
-    <button type="submit">Upload</button>
+    <button type="submit" id="btnSubmit">Upload</button>
     </div>
   </form>
 
   <p><a href="{% url 'home' %}">Return to overview</a></p>
+{% endblock %}
+
+{% block modal %}
+  <div class="modal fade" id="mdlSubmit" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Processing...</h4>
+        </div>
+        <div class="modal-body">
+          <p>Note that uploading and processing your file can take up to several minutes. Thank you for your patience.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script>
+      $(document).ready(function () {
+        $("#upload").submit(function (e) {
+           $("#btnSubmit").attr("disabled", true);
+           $("#mdlSubmit").modal();
+           return true;
+        });
+      });
+    </script>
 {% endblock %}
