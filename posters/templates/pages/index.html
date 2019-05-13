@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load fullurl %}
 
 {% block content %}
     <h3>ICLR 2019 posters</h3>
@@ -7,7 +8,14 @@
         <div class="container">
             <div class="row">
             {% for poster in poster_list %}
-                <a href="{{ poster.preview_large.url }}" data-toggle="lightbox" data-gallery="example-gallery" class="col-md-3 mb-3" data-title="{{ poster.title }}" data-footer="{% for author in poster.author_list %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}<a href='{{ poster.pdf.url }}'>Download PDF</a>{% endif %}">
+                <a href="{{ poster.preview_large.url }}"
+                data-toggle="lightbox" data-gallery="example-gallery" class="col-md-3 mb-3"
+                data-title="{{ poster.title }}"
+                data-footer="<span class='mr-auto'>{% for author in poster.author_list %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}.
+                {% if poster.pdf %} (<a href='{{ poster.pdf.url }}'>PDF</a>){% endif %}</span>
+                <a href='{% fullurl 'detail' poster.slug %}'><i class='fas fa-link'></i></a>
+                <a href='https://www.facebook.com/sharer/sharer.php?u={% filter urlencode %}{% fullurl 'detail' poster.slug %}{% endfilter %}'><i class='fab fa-facebook-f'></i></a>
+                <a href='https://twitter.com/share?url={% fullurl 'detail' poster.slug %}&text=Postersession&hashtags=postersession'><i class='fab fa-twitter'></i></a>">
                     <img src="{{ poster.preview_small.url }}" class="img-fluid">
                 </a>
             {% endfor %}
@@ -18,3 +26,4 @@
         <p>No posters are available.</p>
     {% endif %}
 {% endblock %}
+
