@@ -21,3 +21,4 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 # Posters specific
 -e git://github.com/postersession/pylovepdf.git#egg=pylovepdf
 django-constrainedfilefield[filetype]==3.2.0
+django-unique-upload==0.2.1
