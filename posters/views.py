@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 
+import logging
+logger = logging.getLogger(__name__)
+
 from .models import Poster
 from .forms import PDFForm
 
@@ -27,6 +30,7 @@ def upload(request, access_key):
             try:
                 poster.generate_preview()
             except:
+                logger.exception('Exception while converting PDF')
                 #TODO notify admins about this case
                 return redirect('success-delayed')
             poster.active = True
