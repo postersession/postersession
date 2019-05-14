@@ -78,4 +78,6 @@ class PosterAuthor(models.Model):
     class Meta:
         ordering = ['position']
 
+    def __str__(self):
+        return str(self.author) + ' @ ' + str(self.poster)
 
