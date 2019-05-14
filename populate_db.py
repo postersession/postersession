@@ -23,11 +23,8 @@ def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
             )
 
         for author in paper['authors']:
-            db_author, _ = Author.objects.update_or_create(
-                email=author['email'],
-                defaults={'name': author['name']})
+            db_author, _ = Author.objects.get_or_create(email=author['email'], name=author['name'])
             PosterAuthor.objects.get_or_create(author=db_author, poster=poster)
-
 
 
 if __name__ == '__main__':
