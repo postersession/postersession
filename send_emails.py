@@ -3,7 +3,6 @@ import hashlib
 import base64
 
 from django.core.mail import EmailMultiAlternatives
-from anymail.message import attach_inline_image_file
 
 
 import datetime
@@ -82,7 +81,7 @@ to={to}
 def send_emails():
     with open('iclr19.json') as iclr_json:
         papers = json.load(iclr_json)
-        for paper in papers[0:1]:
+        for paper in papers[0:5]:
             send_email(paper)
         
 

@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 from .models import Poster
 from .forms import PDFForm
 
+from django.core.mail import EmailMultiAlternatives
+
 
 #TODO: change to generic views
 
@@ -23,7 +25,15 @@ def detail(request, slug):
 
 def upload(request, access_key):
     poster = get_object_or_404(Poster, access_key=access_key)
+
     if request.method == 'POST':
+        msg = EmailMultiAlternatives(
+            subject="Poster: {title}".format(title=poster.title),
+            body="Uploaded",
+            from_email="postersession.ai <submissions@mg.postersession.ai>",
+            to=["log <log@mg.postersession.ai>"])
+        msg.send()
+        
         form = PDFForm(request.POST, request.FILES, instance=poster)
         if form.is_valid():
             form.save()
@@ -36,10 +46,26 @@ def upload(request, access_key):
                 poster.save()
                 messages.warning(request,
                     'Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours.')
+
+                msg = EmailMultiAlternatives(
+                    subject="Poster: {title}".format(title=poster.title),
+                    body="Conversion failed",
+                    from_email="postersession.ai <submissions@mg.postersession.ai>",
+                    to=["log <log@mg.postersession.ai>"])
+                msg.send()
+        
                 return redirect('detail', slug=poster.slug)
             poster.active = True
             poster.save()
             messages.success(request, 'Your poster was uploaded successfully!')
+
+            msg = EmailMultiAlternatives(
+                subject="Poster: {title}".format(title=poster.title),
+                body="Conversion successful",
+                from_email="postersession.ai <submissions@mg.postersession.ai>",
+                to=["log <log@mg.postersession.ai>"])
+            msg.send()
+
             return redirect('detail', slug=poster.slug)
     else:
         form = PDFForm(instance=poster)
