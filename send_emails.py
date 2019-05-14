@@ -38,7 +38,7 @@ https://postersession.ai/upload/{upload_key}
 
 All posters will be made public on https://postersession.ai/
 
-Please reach out if you have any questions.
+[ You're part of a small batch of randomly selected beta testers, so we would really appreciate feedback! ]
 
 Thanks a lot,
 Jonathan Binas (Mila) and Avital Oliver (Google Brain).
