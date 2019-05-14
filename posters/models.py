@@ -41,7 +41,7 @@ class Poster(models.Model):
     pdf = ConstrainedFileField(
                     blank=True,
                     upload_to=unique_upload,
-                    max_upload_size=10240000,
+                    max_upload_size=16777216,
                     content_types=['application/pdf'])
 
     def author_list(self):
