@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.core.mail import EmailMultiAlternatives
 import time
 
 import logging
@@ -9,7 +10,11 @@ logger = logging.getLogger(__name__)
 from .models import Poster
 from .forms import PDFForm
 
-from django.core.mail import EmailMultiAlternatives
+
+
+USR_CONVERSION_FAILED = "Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours."
+
+USR_SUCCESS = "Your poster was uploaded successfully!"
 
 
 class LogEmail:
@@ -23,10 +28,12 @@ class LogEmail:
         self.messages.append(msg)
 
     def send(self):
-        email = EmailMultiAlternatives(
-            subject=self.subject, body=', '.join(self.messages),
-            from_email=self.from_email, to=self.to_email)
-        email.send()
+        EmailMultiAlternatives(
+            subject=self.subject,
+            body=', '.join(self.messages),
+            from_email=self.from_email,
+            to=self.to_email
+        ).send()
 
 
 #TODO: change to generic views
@@ -43,6 +50,7 @@ def detail(request, slug):
 def upload(request, access_key):
     poster = get_object_or_404(Poster, access_key=access_key)
     log_email = LogEmail(poster)
+    form = PDFForm(instance=poster)
 
     if request.method == 'POST':
         try:
@@ -55,35 +63,29 @@ def upload(request, access_key):
                 try:
                     poster.generate_preview()
                 except:
-                    logger.exception('Exception while converting PDF')
                     poster.active = False
                     poster.save()
-                    messages.warning(request,
-                        'Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours.')
 
+                    logger.exception('Exception while converting PDF')
+                    messages.warning(request, USR_CONVERSION_FAILED)
                     log_email.add_message('conversion failed')
 
                     return redirect('detail', slug=poster.slug)
 
                 poster.active = True
                 poster.save()
-                messages.success(request, 'Your poster was uploaded successfully!')
-
+                messages.success(request, USR_SUCCESS)
                 log_email.add_message('conversion successful')
 
                 return redirect('detail', slug=poster.slug)
             else:
-                messages.error(request, 'Please upload a PDF.')
                 log_email.add_message('invalid file')
-                form = PDFForm(instance=poster)
-                return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+                messages.error(request, 'Please upload a valid file.')
         finally:
             log_email.send()
 
-    else:
-        form = PDFForm(instance=poster)
-        form.active = False
-        return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+    form.active = False
+    return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
 
 
 
