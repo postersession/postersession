@@ -53,8 +53,8 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
         subject="Share your ICLR poster on postersession.ai",
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
-#        to=["{name} <{email}>".format(name=author['name'], email=author['email']) for author in authors],
-        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
+        to=["{name} <{email}>".format(name=author['name'], email=author['email']) for author in authors],
+#        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
         )
 
     print(msg)
