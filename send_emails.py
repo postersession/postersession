@@ -7,13 +7,13 @@ from django.core.mail import EmailMultiAlternatives
 from posters.models import Conference, Poster, Author, PosterAuthor
 
 
-def send_email(paper):
+def send_email(paper, num_authors=99):
 
     poster = Poster.objects.get(external_id=paper['id'])
 
     filtered_authors = []
 
-    for author in poster.author_list():
+    for author in poster.author_list()[:num_authors]:
         poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         if poster_author.email_sent:
             print('WARN: Not re-sending %s (%s)' % (author, poster))
@@ -53,7 +53,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
         subject="Share your ICLR poster on postersession.ai",
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
-        to=["{name} <{email}>".format(name=author.name, email=author.email) for author in filtered_authors],
+        to=[str(author) for author in filtered_authors],
 #        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
         )
 
@@ -66,6 +66,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
             poster_author = PosterAuthor.objects.get(author=author, poster=poster)
             poster_author.email_sent = datetime.datetime.now()
             poster_author.save()
+        print('INFO: Message sent.')
     except:
         print('ERR: Message could not be sent.')
 
@@ -74,6 +75,7 @@ def send_emails():
     with open('iclr19.json') as f:
         papers = json.load(f)
         for paper in papers[0:2]:
+            print(paper)
             send_email(paper)
 
 
