@@ -12,6 +12,23 @@ from .forms import PDFForm
 from django.core.mail import EmailMultiAlternatives
 
 
+class LogEmail:
+    def __init__(self, poster):
+        self.subject = "Poster: {title}".format(title=poster.title),
+        self.from_email = "postersession.ai <submissions@mg.postersession.ai>"
+        self.to_email = ["log <log@mg.postersession.ai>"]
+        self.messages = []
+
+    def add_message(self, msg):
+        self.messages.append(msg)
+
+    def send(self):
+        email = EmailMultiAlternatives(
+            subject=self.subject, body=', '.join(self.messages),
+            from_email=self.from_email, to=self.to_email)
+        email.send()
+
+
 #TODO: change to generic views
 
 def index(request):
@@ -25,64 +42,48 @@ def detail(request, slug):
 
 def upload(request, access_key):
     poster = get_object_or_404(Poster, access_key=access_key)
+    log_email = LogEmail(poster)
 
     if request.method == 'POST':
-        log_msg = EmailMultiAlternatives(
-            subject="Poster: {title}".format(title=poster.title),
-            body="Uploaded",
-            from_email="postersession.ai <submissions@mg.postersession.ai>",
-            to=["log <log@mg.postersession.ai>"])
-        log_msg.send()
+        try:
+            log_email.add_message('uploaded')
 
-        form = PDFForm(request.POST, request.FILES, instance=poster)
-        if form.is_valid():
-            log_msg = EmailMultiAlternatives(
-                subject="Poster: {title}".format(title=poster.title),
-                body="Valid file",
-                from_email="postersession.ai <submissions@mg.postersession.ai>",
-                to=["log <log@mg.postersession.ai>"])
-            log_msg.send()
+            form = PDFForm(request.POST, request.FILES, instance=poster)
+            if form.is_valid():
+                log_email.add_message('valid file')
+                form.save()
+                try:
+                    poster.generate_preview()
+                except:
+                    logger.exception('Exception while converting PDF')
+                    poster.active = False
+                    poster.save()
+                    messages.warning(request,
+                        'Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours.')
 
-            form.save()
-            try:
-                poster.generate_preview()
-            except:
-                logger.exception('Exception while converting PDF')
-                poster.active = False
+                    log_email.add_message('conversion failed')
+
+                    return redirect('detail', slug=poster.slug)
+
+                poster.active = True
                 poster.save()
-                messages.warning(request,
-                    'Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours.')
+                messages.success(request, 'Your poster was uploaded successfully!')
 
-                log_msg = EmailMultiAlternatives(
-                    subject="Poster: {title}".format(title=poster.title),
-                    body="Conversion failed",
-                    from_email="postersession.ai <submissions@mg.postersession.ai>",
-                    to=["log <log@mg.postersession.ai>"])
-                log_msg.send()
+                log_email.add_message('conversion successful')
 
                 return redirect('detail', slug=poster.slug)
-            poster.active = True
-            poster.save()
-            messages.success(request, 'Your poster was uploaded successfully!')
-
-            log_msg = EmailMultiAlternatives(
-                subject="Poster: {title}".format(title=poster.title),
-                body="Conversion successful",
-                from_email="postersession.ai <submissions@mg.postersession.ai>",
-                to=["log <log@mg.postersession.ai>"])
-            log_msg.send()
-
-            return redirect('detail', slug=poster.slug)
-        else:
-            log_msg = EmailMultiAlternatives(
-                subject="Poster: {title}".format(title=poster.title),
-                body="Invalid file",
-                from_email="postersession.ai <submissions@mg.postersession.ai>",
-                to=["log <log@mg.postersession.ai>"])
-            log_msg.send()
+            else:
+                messages.error(request, 'Please upload a PDF.')
+                log_email.add_message('invalid file')
+                form = PDFForm(instance=poster)
+                return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+        finally:
+            log_email.send()
 
     else:
         form = PDFForm(instance=poster)
         form.active = False
-    return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+        return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+
+
 
