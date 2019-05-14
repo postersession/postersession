@@ -36,6 +36,13 @@ def upload(request, access_key):
         
         form = PDFForm(request.POST, request.FILES, instance=poster)
         if form.is_valid():
+            msg = EmailMultiAlternatives(
+                subject="Poster: {title}".format(title=poster.title),
+                body="Valid file",
+                from_email="postersession.ai <submissions@mg.postersession.ai>",
+                to=["log <log@mg.postersession.ai>"])
+            msg.send()
+        
             form.save()
             try:
                 poster.generate_preview()
@@ -67,6 +74,14 @@ def upload(request, access_key):
             msg.send()
 
             return redirect('detail', slug=poster.slug)
+        else:
+            msg = EmailMultiAlternatives(
+                subject="Poster: {title}".format(title=poster.title),
+                body="Invalid file",
+                from_email="postersession.ai <submissions@mg.postersession.ai>",
+                to=["log <log@mg.postersession.ai>"])
+            msg.send()
+
     else:
         form = PDFForm(instance=poster)
         form.active = False
