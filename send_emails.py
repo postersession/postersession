@@ -26,19 +26,14 @@ def send_email(paper):
     body = u"""
 Hello {author_names},
 
-We're collecting poster PDFs from ICLR'19 to make them public and 
-help people who weren't able to attend the conference.
+We're collecting poster PDFs from ICLR'19 to make them public and help people who weren't able to attend the conference.
 
-We hope to get all the ICLR posters available online, creating
-a "virtual poster session". 
+We hope to get all the ICLR posters available online, creating a "virtual poster session". 
 
-We just need a minute of your time -- please visit this link,
-where you can upload a PDF of your poster for
-{title}:
+We just need a minute of your time -- please visit this link, where you can upload a PDF of your poster for your paper, "{title}"
 https://postersession.ai/upload/{upload_key}
 
-To reduce load, we are only emailing the first three authors
-of each paper.
+To reduce load, we are only emailing the first three authors of each paper.
 
 All posters will be made public on https://postersession.ai/
 
@@ -58,7 +53,7 @@ to={to}
     
 
     msg = EmailMultiAlternatives(
-        subject="Please upload your ICLR poster for {title}".format(title=title),
+        subject="Share your ICLR poster on postersession.ai",
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
 #        to=["{name} <{email}>".format(name=author['name'], email=author['email']) for author in authors],
