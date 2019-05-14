@@ -73,7 +73,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
 def send_emails():
     with open('iclr19.json') as f:
         papers = json.load(f)
-        for paper in papers[0:10]:
+        for paper in papers[0:2]:
             send_email(paper)
 
 
