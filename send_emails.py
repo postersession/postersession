@@ -76,7 +76,7 @@ to={to}
 def send_emails():
     with open('iclr19.json') as iclr_json:
         papers = json.load(iclr_json)
-        for paper in papers[0:5]:
+        for paper in papers[0:10]:
             send_email(paper)
         
 
