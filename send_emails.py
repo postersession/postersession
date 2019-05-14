@@ -1,28 +1,17 @@
 import json
 import hashlib
 import base64
-
-from django.core.mail import EmailMultiAlternatives
-
-
 import datetime
 
-from posters import models
+from django.core.mail import EmailMultiAlternatives
+from posters.models import Conference, Poster, Author, PosterAuthor
+
 
 def send_email(paper):
-    title = paper['title']
-    authors = paper['authors']
 
-    poster = models.Poster.objects.all().filter(external_id=paper['id'])[0]
+    poster = Poster.objects.get(external_id=paper['id'])
+    filtered_authors = poster.author_list()[:3]
 
-    filtered_authors = []
-    for author in authors[0:3]:
-        db_author = models.Author.objects.all().filter(email=author['email'])[0]
-        poster_author = models.PosterAuthor.objects.all().filter(author=db_author, poster=poster)[0]
-        if not poster_author.email_sent:
-            filtered_authors += [author]
-
-    upload_key = poster.access_key
     body = u"""
 Hello {author_names},
 
@@ -44,13 +33,10 @@ Thanks a lot,
 Jonathan Binas (Mila) and Avital Oliver (Google Brain).
 
 """.format(
-        author_names=u", ".join([author["name"] for author in filtered_authors]),
-        paper_id=paper['id'],
-        upload_key=upload_key,
-        title=title,
-        to=["{name} <{email}>".format(name=author['name'], email=author['email']) for author in filtered_authors])
-
-
+        author_names=u", ".join([author.name for author in filtered_authors]),
+        upload_key=poster.access_key,
+        title=poster.title,
+        to=[str(author) for author in filtered_authors])
 
     msg = EmailMultiAlternatives(
         subject="Share your ICLR poster on postersession.ai",
@@ -66,15 +52,14 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
     print(msg)
 
     for author in filtered_authors:
-        db_author = models.Author.objects.all().filter(email=author['email'])[0]
-        poster_author = models.PosterAuthor.objects.all().filter(author=db_author, poster=poster)[0]
+        poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         poster_author.email_sent = datetime.datetime.now()
         poster_author.save()
 
 
 def send_emails():
-    with open('iclr19.json') as iclr_json:
-        papers = json.load(iclr_json)
+    with open('iclr19.json') as f:
+        papers = json.load(f)
         for paper in papers[0:10]:
             send_email(paper)
 

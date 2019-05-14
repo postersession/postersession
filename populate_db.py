@@ -2,41 +2,35 @@ import json
 import hashlib
 import base64
 
-from django.core.mail import EmailMultiAlternatives
-from anymail.message import attach_inline_image_file
-
-from posters import models
+from posters.models import Conference, Poster, Author, PosterAuthor
 
 import uuid
 
-iclr2019 = models.Conference.objects.all().filter(name="ICLR 2019")[0] 
 
-def populate_db():
-    with open('iclr19.json') as iclr_json:
-        papers = json.load(iclr_json)
+def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
 
-        for paper in papers:
-            title = paper['title']
-            id = paper['id']
-            conference = 'iclr19'
-            key = conference + '/' + id
+    conference, _ = Conference.objects.get_or_create(name=conference_name)
 
-            poster = models.Poster(
-                conference=iclr2019,
-                title=title,
-                access_key=str(uuid.uuid4()),
-                external_id=id)
-            poster.save()
+    with open(input_file) as f:
+        papers = json.load(f)
 
-            authors = paper['authors']
-            db_authors = []
-            for author in authors:
-                found_db_authors = models.Author.objects.all().filter(email=author['email'])
-                if len(found_db_authors) > 0:
-                    models.PosterAuthor(author=found_db_authors[0], poster=poster).save()
-                else:
-                    db_author = models.Author(email=author['email'], name=author['name'])
-                    db_author.save()
-                    models.PosterAuthor(author=db_author, poster=poster).save()
-        
+    for paper in papers:
+        poster, _ = Poster.objects.update_or_create(
+            conference=conference,
+            title=paper['title'],
+            external_id=paper['id'],
+            defaults={'access_key': str(uuid.uuid4())},
+            )
+
+        for author in paper['authors']:
+            db_author, _ = Author.objects.update_or_create(
+                email=author['email'],
+                defaults={'name': author['name']})
+            PosterAuthor.objects.get_or_create(author=db_author, poster=poster)
+
+
+
+if __name__ == '__main__':
+
+    populate_db()
 
