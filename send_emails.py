@@ -13,7 +13,7 @@ def send_email(paper):
 
     filtered_authors = []
 
-    for author in poster.author_list()[:3]:
+    for author in poster.author_list():
         poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         if poster_author.email_sent:
             print('WARN: Not re-sending %s (%s)' % (author, poster))
@@ -53,11 +53,11 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
         subject="Share your ICLR poster on postersession.ai",
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
-#        to=["{name} <{email}>".format(name=author['name'], email=author['email']) for author in authors],
-        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
+        to=["{name} <{email}>".format(name=author.name, email=author.email) for author in filtered_authors],
+#        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
         )
 
-    print(msg)
+    print(msg.to, msg.body)
 
     try:
         msg.send()
@@ -73,7 +73,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
 def send_emails():
     with open('iclr19.json') as f:
         papers = json.load(f)
-        for paper in papers[0:10]:
+        for paper in papers[0:2]:
             send_email(paper)
 
 
