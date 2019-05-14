@@ -17,7 +17,7 @@
                 <a href='https://www.facebook.com/sharer/sharer.php?u={% filter urlencode %}{% fullurl 'detail' poster.slug %}{% endfilter %}'><i class='fab fa-facebook-f'></i></a>
                 <a href='https://twitter.com/share?url={%fullurl 'detail' poster.slug %}&text={%filter urlencode%}Here's my poster from ICLR with my great collaborators XXX:{% endfilter %}&hashtags=postersession'><i class='fab fa-twitter'></i></a>">
                     <img src="{{ poster.preview_small.url }}" class="img-fluid">
-                    <div class="search-helper">{{ poster.title }} by {% for author in poster.author_list %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}</div>
+                    <div class="search-helper my-2"><small>{{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al.</small></div>
                 </a>
             {% endfor %}
             </div>
