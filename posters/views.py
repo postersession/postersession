@@ -13,8 +13,9 @@ from .forms import PDFForm
 
 
 USR_CONVERSION_FAILED = "Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours."
-
 USR_SUCCESS = "Your poster was uploaded successfully!"
+USR_INVALID_FILE = "Please upload a valid file."
+USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by uploading a new file."
 
 
 class LogEmail:
@@ -51,6 +52,8 @@ def upload(request, access_key):
     poster = get_object_or_404(Poster, access_key=access_key)
     log_email = LogEmail(poster)
     form = PDFForm(instance=poster)
+    if poster.pdf:
+        messages.info(request, USR_EXISTING_FILE)
 
     if request.method == 'POST':
         try:
@@ -80,7 +83,7 @@ def upload(request, access_key):
                 return redirect('detail', slug=poster.slug)
             else:
                 log_email.add_message('invalid file')
-                messages.error(request, 'Please upload a valid file.')
+                messages.error(request, USR_INVALID_FILE)
         finally:
             log_email.send()
 
