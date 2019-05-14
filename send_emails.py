@@ -13,7 +13,7 @@ def send_email(paper):
 
     filtered_authors = []
 
-    for author in poster.author_list()[:3]:
+    for author in poster.author_list():
         poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         if poster_author.email_sent:
             print('WARN: Not re-sending %s (%s)' % (author, poster))
