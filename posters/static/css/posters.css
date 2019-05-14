@@ -32,3 +32,6 @@ footer {
   padding: 0 .5em;
 }
 
+.ekko-lightbox-nav-overlay a {
+  color: #343a40!important
+}
