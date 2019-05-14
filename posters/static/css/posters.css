@@ -35,3 +35,12 @@ footer {
 .ekko-lightbox-nav-overlay a {
   color: #343a40!important
 }
+
+.search-helper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+}
+
