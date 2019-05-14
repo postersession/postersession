@@ -10,7 +10,18 @@ from posters.models import Conference, Poster, Author, PosterAuthor
 def send_email(paper):
 
     poster = Poster.objects.get(external_id=paper['id'])
-    filtered_authors = poster.author_list()[:3]
+
+    filtered_authors = []
+
+    for author in poster.author_list()[:3]:
+        poster_author = PosterAuthor.objects.get(author=author, poster=poster)
+        if poster_author.email_sent:
+            print('WARN: Not re-sending %s (%s)' % (author, poster))
+            continue
+        if poster_author.exclude:
+            print('WARN: excluding %s (%s)' % (author, poster))
+            continue
+        filtered_authors.append(author)
 
     body = u"""
 Hello {author_names},
@@ -46,15 +57,17 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
         to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
         )
 
-    # Send it:
-    msg.send()
-
     print(msg)
 
-    for author in filtered_authors:
-        poster_author = PosterAuthor.objects.get(author=author, poster=poster)
-        poster_author.email_sent = datetime.datetime.now()
-        poster_author.save()
+    try:
+        msg.send()
+
+        for author in filtered_authors:
+            poster_author = PosterAuthor.objects.get(author=author, poster=poster)
+            poster_author.email_sent = datetime.datetime.now()
+            poster_author.save()
+    except:
+        print('ERR: Message could not be sent.')
 
 
 def send_emails():
