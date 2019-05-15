@@ -50,7 +50,7 @@ We just need a minute of your time -- please visit this link, where you can uplo
 https://postersession.ai/upload/{upload_key}
 
 All posters will be made public on https://postersession.ai/
-
+Please let us know if you have any questions!
 
 Thanks a lot,
 

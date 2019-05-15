@@ -15,12 +15,14 @@ def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
         papers = json.load(f)
 
     for paper in papers:
-        poster, _ = Poster.objects.update_or_create(
+        poster, created = Poster.objects.get_or_create(
             conference=conference,
             title=paper['title'],
             external_id=paper['id'],
-            defaults={'access_key': str(uuid.uuid4())},
             )
+        if created:
+            poster.access_key = str(uuid.uuid4())
+            poster.save()
 
         for author in paper['authors']:
             db_author, _ = Author.objects.get_or_create(email=author['email'], name=author['name'])
