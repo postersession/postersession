@@ -67,7 +67,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain)
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
         to=[str(author) for author in filtered_authors],
-        bcc=["log@mg.postersession.ai"]
+        #bcc=["log@mg.postersession.ai"]
         )
 
     #print(msg.to, msg.body)
@@ -87,12 +87,13 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain)
         logger.error('Message could not be sent.')
 
 
-def send_emails(start_id=0, end_id=1):
+def send_emails(start_id=0, end_id=1, send=False):
     with open('iclr19.json') as f:
         papers = json.load(f)
         for i, paper in enumerate(papers[start_id:end_id]):
             logger.info('processing paper %s' % (i + start_id))
-            logger.info('sending %s' % str(paper))
-            send_email(paper)
+            logger.info(str(paper))
+            if send:
+                send_email(paper)
 
 
