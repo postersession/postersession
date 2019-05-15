@@ -1,10 +1,23 @@
 import json
 import hashlib
 import base64
-import datetime
+from django.utils import timezone
 
 from django.core.mail import EmailMultiAlternatives
 from posters.models import Conference, Poster, Author, PosterAuthor
+
+import logging
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+fileHandler = logging.FileHandler("email.log")
+fileHandler.setFormatter(logFormatter)
+logger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
 
 
 def send_email(paper, num_authors=99):
@@ -16,10 +29,10 @@ def send_email(paper, num_authors=99):
     for author in poster.author_list()[:num_authors]:
         poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         if poster_author.email_sent:
-            print('WARN: Not re-sending %s (%s)' % (author, poster))
+            logger.warning('Not re-sending %s (%s)' % (author, poster))
             continue
         if poster_author.exclude:
-            print('WARN: excluding %s (%s)' % (author, poster))
+            logger.warning('excluding %s (%s)' % (author, poster))
             continue
         filtered_authors.append(author)
 
@@ -38,10 +51,10 @@ https://postersession.ai/upload/{upload_key}
 
 All posters will be made public on https://postersession.ai/
 
-[ You're part of a small batch of randomly selected beta testers, so we would really appreciate feedback! ]
 
 Thanks a lot,
-Jonathan Binas (Mila) and Avital Oliver (Google Brain).
+
+Jonathan Binas (Mila) and Avital Oliver (Google Brain)
 
 """.format(
         author_names=u", ".join([author.name for author in filtered_authors]),
@@ -54,28 +67,32 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain).
         body=body,
         from_email="postersession.ai <submissions@mg.postersession.ai>",
         to=[str(author) for author in filtered_authors],
-#        to=["Avital Oliver <avital@thewe.net>", "Jonathan Binas <jbinas@gmail.com>"]
+        bcc=["log@mg.postersession.ai"]
         )
 
-    print(msg.to, msg.body)
+    #print(msg.to, msg.body)
 
     try:
-        msg.send()
+        if filtered_authors:
+            msg.send()
 
-        for author in filtered_authors:
-            poster_author = PosterAuthor.objects.get(author=author, poster=poster)
-            poster_author.email_sent = datetime.datetime.now()
-            poster_author.save()
-        print('INFO: Message sent.')
+            for author in filtered_authors:
+                poster_author = PosterAuthor.objects.get(author=author, poster=poster)
+                poster_author.email_sent = timezone.now()
+                poster_author.save()
+            logger.info('Message sent.')
+        else:
+            logger.info('Not sending (no authors).')
     except:
-        print('ERR: Message could not be sent.')
+        logger.error('Message could not be sent.')
 
 
-def send_emails():
+def send_emails(start_id=0, end_id=1):
     with open('iclr19.json') as f:
         papers = json.load(f)
-        for paper in papers[0:2]:
-            print(paper)
+        for i, paper in enumerate(papers[start_id:end_id]):
+            logger.info('processing paper %s' % (i + start_id))
+            logger.info('sending %s' % str(paper))
             send_email(paper)
 
 
