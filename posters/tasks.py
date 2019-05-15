@@ -12,7 +12,7 @@ def generate_preview(poster, small=300, large=1200):
 
     from PIL import Image
     from pylovepdf.tools.pdftojpg import PdfToJpg
-    PIL.Image.MAX_IMAGE_PIXELS = 2**29
+    Image.MAX_IMAGE_PIXELS = 2**29
 
     with tempfile.TemporaryDirectory() as path:
         t = PdfToJpg(settings.ILPDF_KEY, verify_ssl=True, proxies=None)
