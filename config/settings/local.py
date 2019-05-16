@@ -23,6 +23,7 @@ CACHES = {
         'LOCATION': ''
     }
 }
+CACHE_TTL = env('DJANGO_CACHE_TTL', default=120)
 
 # TEMPLATES
 # ------------------------------------------------------------------------------

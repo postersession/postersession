@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
 import time
 import logging
 
@@ -12,13 +14,14 @@ logger = logging.getLogger(__name__)
 
 
 USR_CONVERSION_FAILED = "Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours."
-USR_SUCCESS = "Your poster was uploaded successfully!"
+USR_SUCCESS = "Your poster was uploaded successfully! It will appear on the front page within a minute or two."
 USR_INVALID_FILE = "Please upload a valid file."
 USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by uploading a new file."
 
 
 #TODO: change to generic views
 
+@cache_page(settings.CACHE_TTL)
 def index(request):
     poster_list = Poster.objects.filter(active=True).prefetch_related('authors')
     context = {'poster_list': poster_list}
