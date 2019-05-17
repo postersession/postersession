@@ -13,7 +13,8 @@ from .utils import email_log
 logger = logging.getLogger(__name__)
 
 
-USR_CONVERSION_FAILED = "Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours."
+USR_FAILED = "Your poster was uploaded successfully, but we had trouble converting it. We will look into it and activate your poster within the next few hours."
+USR_FAILED_MULTIPAGE = "It looks like you might have uploaded a multi-page document. We can only handle single page posters, at the moment."
 USR_SUCCESS = "Your poster was uploaded successfully! It will appear on the front page within a minute or two."
 USR_INVALID_FILE = "Please upload a valid file."
 USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by uploading a new file."
@@ -48,22 +49,24 @@ def upload(request, access_key):
                 form.save()
                 try:
                     poster.generate_preview()
+                    poster.active = True
+                    poster.save()
+                    messages.success(request, USR_SUCCESS)
+                    log_email.add_message('INFO: conversion successful')
+                    return redirect('detail', slug=poster.slug)
+                except TypeError:
+                    poster.active = False
+                    poster.save()
+                    logger.exception('ERR: failed to convert PDF (id %s) -- likely multi-page document' % poster.pk)
+                    messages.error(request, USR_FAILED_MULTIPAGE)
+                    log_email.add_message('ERR: conversion failed -- likely multi-page document')
                 except:
                     poster.active = False
                     poster.save()
-
                     logger.exception('ERR: failed to convert PDF (id %s)' % poster.pk)
-                    messages.warning(request, USR_CONVERSION_FAILED)
+                    messages.warning(request, USR_FAILED)
                     log_email.add_message('ERR: conversion failed')
-
                     return redirect('detail', slug=poster.slug)
-
-                poster.active = True
-                poster.save()
-                messages.success(request, USR_SUCCESS)
-                log_email.add_message('INFO: conversion successful')
-
-                return redirect('detail', slug=poster.slug)
             else:
                 log_email.add_message('ERR: invalid file')
                 messages.error(request, USR_INVALID_FILE)

@@ -8,7 +8,7 @@ import os
 def generate_preview(poster, small=300, large=1200):
 
     if not poster.pdf:
-        raise ValueError('no pdf file available')
+        raise FileNotFoundError('no pdf file available')
 
     from PIL import Image
     from pylovepdf.tools.pdftojpg import PdfToJpg
@@ -28,6 +28,10 @@ def generate_preview(poster, small=300, large=1200):
         t.set_output_folder(path)
         t.execute()
         t.download()
+
+        # hacky way to detect multi-page doc
+        if t.downloaded_filename[-3:] == 'zip':
+            raise TypeError('a zip file was returned')
 
         # generate previews
         img_path = os.path.join(t.download_path, t.downloaded_filename)
