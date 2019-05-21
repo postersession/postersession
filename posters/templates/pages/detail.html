@@ -1,4 +1,24 @@
 {% extends "base.html" %}
+{% load fullurl %}
+
+
+{% block title %}Poster: {{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al. ({{ poster.conference }}){% endblock %}
+
+
+{% block meta %}
+    <meta name="description" content="Poster: {{ poster.title }} by {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %} ({{ poster.conference }})">
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Poster: {{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al." />
+    <meta property="og:description" content="Poster: {{ poster.title }} by {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %} ({{ poster.conference }})" />
+    <meta property="og:url" content="{% fullurl 'detail' poster.slug %}" />
+    <meta property="og:site_name" content="Postersession.ai Machine Learning Conference Posters" />
+    <meta property="og:image" content="{{ poster.preview_small.url }}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="Poster: {{ poster.title }} by {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %} ({{ poster.conference }})" />
+    <meta name="twitter:title" content="Poster: {{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al." />
+    <meta name="twitter:image" content="{{ poster.preview_small.url }}" />
+{% endblock %}
+
 
 {% block content %}
 <h1>{{ poster.title }}</h1>

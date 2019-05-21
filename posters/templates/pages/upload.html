@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+
+{% block robots %}
+  {{ block.super }}
+  <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+
 {% block content %}
   <h3>Poster upload: {{ poster.title }}</h3>
   <p>

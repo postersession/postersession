@@ -1,5 +1,20 @@
 {% extends "base.html" %}
-{% load fullurl %}
+{% load static fullurl %}
+
+
+{% block title %}Postersession.ai -- making research posters accessible{% endblock %}
+
+
+{% block meta %}
+    <meta name="description" content="Postersession.ai -- machine learning conference posters online">
+    <meta property="og:title" content="Postersession.ai -- machine learning conference posters" />
+    <meta property="og:image" content="{% fullstatic 'img/overview.png' %}" />
+    <meta property="og:site_name" content="Postersession.ai" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Postersession.ai -- machine learning conference posters" />
+    <meta name="twitter:image" content="{% fullstatic 'img/overview.png' %}" />
+{% endblock %}
+
 
 {% block content %}
     <h3>ICLR 2019 posters</h3>
