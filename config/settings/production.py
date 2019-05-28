@@ -27,9 +27,13 @@ CACHES = {
 #            # Mimicing memcache behavior.
 #            'IGNORE_EXCEPTIONS': True,
 #        }
+    },
+    'index': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': ''
     }
 }
-CACHE_TTL = env.int('DJANGO_CACHE_TTL', default=120)
+CACHE_TTL = env.int('DJANGO_CACHE_TTL', default=60*15)
 
 
 # SECURITY

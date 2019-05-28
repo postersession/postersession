@@ -2,6 +2,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.core.cache import caches
 from django.views.decorators.cache import cache_page
 import time
 import logging
@@ -22,7 +23,7 @@ USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by
 
 #TODO: change to generic views
 
-@cache_page(settings.CACHE_TTL)
+@cache_page(settings.CACHE_TTL, cache='index')
 def index(request):
     poster_list = Poster.objects.filter(active=True).prefetch_related('authors')
     context = {'poster_list': poster_list}
@@ -71,10 +72,15 @@ def upload(request, access_key):
                 log_email.add_message('ERR: invalid file')
                 messages.error(request, USR_INVALID_FILE)
         finally:
+            caches['index'].clear()
             log_email.send()
 
     form.active = False
     return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+
+def rss(request):
+    pass
+
 
 
 
