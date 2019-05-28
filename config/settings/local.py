@@ -23,8 +23,8 @@ CACHES = {
         'LOCATION': ''
     },
     'index': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': ''
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': 'cache',
     },
 }
 CACHE_TTL = env.int('DJANGO_CACHE_TTL', default=60*15)
