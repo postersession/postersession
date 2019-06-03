@@ -8,8 +8,8 @@ import posters.views
 class LogEmail:
     def __init__(self, poster):
         self.subject = "Poster: {title}".format(title=poster.title),
-        self.from_email = "postersession.ai <submissions@mg.postersession.ai>"
-        self.to_email = ["log <log@mg.postersession.ai>"]
+        self.from_email = "postersession.ai <submissions@postersession.ai>"
+        self.to_email = ["log <log@postersession.ai>"]
         self.messages = [
             'title: %s' % poster.title,
             'authors: %s' % ', '.join([str(a) for a in poster.author_list()]),

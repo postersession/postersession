@@ -65,9 +65,9 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain)
     msg = EmailMultiAlternatives(
         subject="Share your ICLR poster on postersession.ai",
         body=body,
-        from_email="postersession.ai <submissions@mg.postersession.ai>",
+        from_email="postersession.ai <submissions@postersession.ai>",
         to=[str(author) for author in filtered_authors],
-        #bcc=["log@mg.postersession.ai"]
+        #bcc=["log@postersession.ai"]
         )
 
     #print(msg.to, msg.body)
