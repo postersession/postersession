@@ -10,11 +10,16 @@ class PosterAuthorsInline(admin.TabularInline):
     extra = 1
 
 class PosterAdmin(admin.ModelAdmin):
+    search_fields = ['title', 'conference__name', 'authors__name', 'authors__email']
+    inlines = (PosterAuthorsInline,)
+
+class AuthorAdmin(admin.ModelAdmin):
+    search_fields = ['name', 'email', 'poster__title']
     inlines = (PosterAuthorsInline,)
 
 
 admin.site.register(Conference)
-admin.site.register(Author)
+admin.site.register(Author, AuthorAdmin)
 admin.site.register(PosterAuthor)
 admin.site.register(Poster, PosterAdmin)
 
