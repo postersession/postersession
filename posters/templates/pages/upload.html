@@ -10,7 +10,7 @@
 {% block content %}
   <h3>Poster upload: {{ poster.title }}</h3>
   <p>
-    {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}.
+    {{ poster.author_list }}. {{ poster.conference }}.
   </p>
   <form method="post" enctype="multipart/form-data" id="upload">
     <div class="form-group">

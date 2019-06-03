@@ -26,13 +26,13 @@
                 <a href="{{ poster.preview_large.url }}"
                 data-toggle="lightbox" data-gallery="example-gallery" class="col-md-3 mb-3"
                 data-title="{{ poster.title }}"
-                data-footer="<span class='mr-auto'>{% for author in poster.author_list %}{{author.name}}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}.
+                data-footer="<span class='mr-auto'>{{ poster.author_list }}. {{ poster.conference }}.
                 {% if poster.pdf %} (<a target='_blank' href='{{ poster.pdf.url }}'><b>Poster PDF</b></a>){% endif %}</span>
                 <a href='{% fullurl 'detail' poster.slug %}'><i class='fas fa-link'></i></a>
                 <a href='https://www.facebook.com/sharer/sharer.php?u={% filter urlencode %}{% fullurl 'detail' poster.slug %}{% endfilter %}'><i class='fab fa-facebook-f'></i></a>
-                <a href='https://twitter.com/share?url={%fullurl 'detail' poster.slug %}&text={%filter urlencode%}Here's my poster from ICLR with my great collaborators XXX:{% endfilter %}&hashtags=postersession'><i class='fab fa-twitter'></i></a>">
+                <a href='https://twitter.com/share?url={% fullurl 'detail' poster.slug %}&text={% filter urlencode %}Here's my poster from ICLR with my great collaborators XXX:{% endfilter %}&hashtags=postersession'><i class='fab fa-twitter'></i></a>">
                     <img src="{{ poster.preview_small.url }}" class="img-fluid">
-                    <div class="search-helper my-2"><small>{{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al.</small></div>
+                    <div class="search-helper my-2"><small>{{ poster.ref_short }}</small></div>
                 </a>
             {% endfor %}
             </div>

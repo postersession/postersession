@@ -26,7 +26,7 @@ def send_email(paper, num_authors=99):
 
     filtered_authors = []
 
-    for author in poster.author_list()[:num_authors]:
+    for author in poster.author_list[:num_authors]:
         poster_author = PosterAuthor.objects.get(author=author, poster=poster)
         if poster_author.email_sent:
             logger.warning('Not re-sending %s (%s)' % (author, poster))

@@ -12,7 +12,7 @@ class LogEmail:
         self.to_email = ["log <log@postersession.ai>"]
         self.messages = [
             'title: %s' % poster.title,
-            'authors: %s' % ', '.join([str(a) for a in poster.author_list()]),
+            'authors: %s' % ', '.join([str(a) for a in poster.author_list]),
             'poster id: %s' % poster.pk,
             'upload url: %s' % reverse(posters.views.upload, args=[poster.access_key]),
             '',

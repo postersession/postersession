@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 from constrainedfilefield.fields import ConstrainedFileField
 from unique_upload import unique_upload
 from .tasks import generate_preview
@@ -26,6 +27,37 @@ class Author(models.Model):
         return self.name + ' <' + str(self.email) + '>'
 
 
+class AuthorList:
+    ''' utility class representing a list of authors '''
+    def __init__(self, q):
+        self.q = q
+        self.authors = [obj.author for obj in q]
+
+    def __len__(self):
+        return self.authors.__len__()
+
+    def __iter__(self):
+        return self.authors.__iter__()
+
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            return AuthorList(self.q[item])
+        else:
+            return self.authors[item]
+
+    def __str__(self):
+        ''' formatted author list '''
+        names = [a.name for a in self.authors]
+        if len(self) == 0:
+            return '<no authors>'
+        elif len(self) == 1:
+            return names[0]
+        elif len(self) == 2:
+            return names[0] + ' and ' + names[1]
+        else: # > 1
+            return ', '.join(names[:-1]) + ', and ' + names[-1]
+
+
 class Poster(models.Model):
     title = models.CharField(max_length=256)
     slug = models.SlugField(max_length=40, unique=True, blank=True)
@@ -44,9 +76,6 @@ class Poster(models.Model):
                     max_upload_size=16777216,
                     content_types=['application/pdf'])
 
-    def author_list(self):
-        return [obj.author for obj in PosterAuthor.objects.filter(poster=self).order_by('position')]
-
     def generate_preview(self):
         generate_preview(self)
 
@@ -55,8 +84,35 @@ class Poster(models.Model):
             unique_slugify(self, self.title)
         super(Poster, self).save(*args, **kwargs)
 
+    @property
+    def author_list(self):
+        return AuthorList(PosterAuthor.objects.filter(poster=self).order_by('position'))
+
+    @property
+    def first_author(self):
+        try:
+            poster_author = PosterAuthor.objects.filter(poster=self).order_by('position')[:1].get()
+            return poster_author.author
+        except ObjectDoesNotExist:
+            return Author(name='<no author>')
+
+    @property
+    def num_authors(self):
+        return PosterAuthor.objects.filter(poster=self).count()
+
+    @property
+    def ref_short(self):
+        ''' poster title and first author '''
+        etal = 'et al.' if self.num_authors > 1 else ''
+        return ' '.join([self.title, 'by', self.first_author.name, etal])
+
+    @property
+    def ref_long(self):
+        ''' poster title, all authors, conference name '''
+        return ' '.join([self.title + '.', str(self.author_list), '(' + self.conference.name + ')'])
+
     def __str__(self):
-        return self.title + ' (' + self.conference.name + ')'
+        return self.ref_short + ' (' + str(self.conference.name) + ')'
 
 
 class PosterAuthor(models.Model):
@@ -66,6 +122,10 @@ class PosterAuthor(models.Model):
     position = models.IntegerField(default=0)
     exclude = models.BooleanField(default=False)
     email_sent = models.DateTimeField(blank=True, null=True)
+
+    @property
+    def name(self):
+        return self.author.name
 
     def save(self, *args, **kwargs):
         ''' automatically increment position on creation '''
