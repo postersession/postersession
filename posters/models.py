@@ -132,9 +132,9 @@ class PosterAuthor(models.Model):
     def save(self, *args, **kwargs):
         ''' automatically increment position on creation '''
         if not self.pk: # object has not been saved yet
-            max_position = PosterAuthor.objects.filter(poster=self.poster).order_by('-position')
-            if max_position.exists():
-                self.position = max_position.all()[0].position + 1
+            max_position = PosterAuthor.objects.filter(poster=self.poster).order_by('-position').first()
+            if max_position is not None:
+                self.position = max_position.position + 1
         super(PosterAuthor, self).save(*args, **kwargs)
 
     class Meta:

@@ -36,18 +36,7 @@ USE_TZ = True
 
 # DATABASES
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-DATABASES = {
-    #'default': env.db('DATABASE_URL', default='postgres:///posters'),
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        #'NAME': ROOT_DIR.path('db.sqlite'),
-        'NAME': 'db.sqlite',
-    }
-}
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+# moved to local config
 
 # URLS
 # ------------------------------------------------------------------------------

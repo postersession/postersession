@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.core.cache import caches
 from django.views.decorators.cache import cache_page
+from django.contrib.postgres.search import SearchVector
 from datetime import date
 import time
 import logging
@@ -28,12 +29,16 @@ USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by
 def index(request, conference_id=None):
     if conference_id is None:
         poster_list = Poster.objects.filter(active=True).order_by('-pub_date')[:256].prefetch_related('authors')
-        context = {'poster_list': poster_list}
+        return render(request, 'pages/index.html', {'poster_list': poster_list})
     else:
         conference = get_object_or_404(Conference, slug=conference_id)
         poster_list = Poster.objects.filter(active=True, conference=conference).prefetch_related('authors')
-        context = {'poster_list': poster_list, 'conference': conference}
-    return render(request, 'pages/index.html', context)
+        return render(request, 'pages/index.html', {'poster_list': poster_list, 'conference': conference})
+
+def search(request):
+    search_vector = SearchVector('title', 'conference__name', 'authors__name')
+    poster_list = Poster.objects.annotate(search=search_vector).distinct('pk').filter(active=True, search=request.GET['q'])
+    return render(request, 'pages/index.html', {'poster_list': poster_list, 'search': True})
 
 def detail(request, slug):
     poster = get_object_or_404(Poster, slug=slug)

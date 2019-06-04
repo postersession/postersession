@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('upload/<str:access_key>/', views.upload, name='upload'),
     path('poster/<str:slug>/', views.detail, name='detail'),
+    path('search', views.search, name='search'),
     path('about/', TemplateView.as_view(template_name="pages/about.html"), name="about"),
     path('contact/', TemplateView.as_view(template_name="pages/contact.html"), name="contact"),
     path('disclaimer/', TemplateView.as_view(template_name="pages/disclaimer.html"), name="disclaimer"),

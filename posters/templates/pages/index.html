@@ -6,18 +6,18 @@
 
 
 {% block meta %}
-    <meta name="description" content="Postersession.ai -- machine learning conference posters online">
-    <meta property="og:title" content="Postersession.ai -- machine learning conference posters" />
+    <meta name="description" content="Postersession.ai -- machine learning conference posters">
+    <meta property="og:title" content="Postersession.ai{% if conference %} -- {{ conference.name }} Posters{% endif %}" />
     <meta property="og:image" content="{% fullstatic 'img/overview.jpg' %}" />
     <meta property="og:site_name" content="Postersession.ai" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Postersession.ai -- machine learning conference posters" />
+    <meta name="twitter:title" content="Postersession.ai -- {% if conference %}{{ conference.name }} Posters{% else %}machine learning conference posters{% endif %}" />
     <meta name="twitter:image" content="{% fullstatic 'img/overview.jpg' %}" />
 {% endblock %}
 
 
 {% block content %}
-    <h3>{% if conference %}{{ conference.name }}{% else %}Latest{% endif %} Posters</h3>
+    <h3>{% if conference %}{{ conference.name }} Posters{% elif search %}Search Results{% else %}Latest Posters{% endif %}</h3>
     {% if poster_list %}
     <div class="row justify-content-center">
         <div class="container">
@@ -39,7 +39,7 @@
         </div>
     </div>
     {% else %}
-        <p>No posters are available.</p>
+        <p>We couldn't find any posters matching your request.</p>
     {% endif %}
 {% endblock %}
 

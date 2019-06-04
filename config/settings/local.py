@@ -29,6 +29,21 @@ CACHES = {
 }
 CACHE_TTL = env.int('DJANGO_CACHE_TTL', default=5)
 
+# DATABASES
+# ------------------------------------------------------------------------------
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'posters',
+        'USER': 'posteruser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 # TEMPLATES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
