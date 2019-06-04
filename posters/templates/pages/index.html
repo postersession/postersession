@@ -2,7 +2,7 @@
 {% load static fullurl %}
 
 
-{% block title %}Postersession.ai -- making research posters accessible{% endblock %}
+{% block title %}Postersession.ai -- {% if conference %}{{ conference.name }} Posters{% else %}making research posters accessible{% endif %}{% endblock %}
 
 
 {% block meta %}
@@ -17,7 +17,7 @@
 
 
 {% block content %}
-    <h3>ICLR 2019 posters</h3>
+    <h3>{% if conference %}{{ conference.name }}{% else %}Latest{% endif %} Posters</h3>
     {% if poster_list %}
     <div class="row justify-content-center">
         <div class="container">

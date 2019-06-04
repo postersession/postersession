@@ -92,11 +92,8 @@ class Poster(models.Model):
 
     @property
     def first_author(self):
-        try:
-            poster_author = PosterAuthor.objects.filter(poster=self).order_by('position')[:1].get()
-            return poster_author.author
-        except ObjectDoesNotExist:
-            return Author(name='<no author>')
+        poster_author = PosterAuthor.objects.filter(poster=self).order_by('position').first()
+        return getattr(poster_author, 'author', Author(name='<no author>'))
 
     @property
     def num_authors(self):

@@ -1,4 +1,4 @@
-{% load fullurl static i18n %}<!DOCTYPE html>
+{% load fullurl static i18n conferences %}<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -48,8 +48,9 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Conference</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">ICLR 2019</a>
-                <a class="dropdown-item" href="#">ICML 2019</a>
+              {% get_conferences as conf_list %}{% for conf in conf_list %}
+                <a class="dropdown-item" href="{% fullurl 'conference' conf.slug %}">{{ conf.name }}</a>
+              {% endfor %}
               </div>
             </li>
             <li class="nav-item">
