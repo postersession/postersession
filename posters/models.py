@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.utils import timezone
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from constrainedfilefield.fields import ConstrainedFileField
 from unique_upload import unique_upload
@@ -10,6 +11,7 @@ from .utils.slugify import unique_slugify
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=40, unique=True)
     date_from = models.DateField(default=date.today)
     date_to = models.DateField(default=date.today)
     location = models.CharField(max_length=256, blank=True)
@@ -110,6 +112,9 @@ class Poster(models.Model):
     def ref_long(self):
         ''' poster title, all authors, conference name '''
         return ' '.join([self.title + '.', str(self.author_list), '(' + self.conference.name + ')'])
+
+    def get_absolute_url(self):
+        return reverse('detail', args=[self.slug])
 
     def __str__(self):
         return self.ref_short + ' (' + str(self.conference.name) + ')'

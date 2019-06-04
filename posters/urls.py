@@ -13,4 +13,7 @@ urlpatterns = [
     path('disclaimer/', TemplateView.as_view(template_name="pages/disclaimer.html"), name="disclaimer"),
     path('success/', TemplateView.as_view(template_name="pages/success.html"), name="success"),
     path('success-delayed/', TemplateView.as_view(template_name="pages/success-delayed.html"), name="success-delayed"),
+    path('sitemap.xml', views.sitemap, name='sitemap'),
+    path('robots.txt/', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
+    path('<str:conference_id>/', views.index, name='conference'),
 ]

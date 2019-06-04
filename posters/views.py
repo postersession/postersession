@@ -4,10 +4,11 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.core.cache import caches
 from django.views.decorators.cache import cache_page
+from datetime import date
 import time
 import logging
 
-from .models import Poster
+from .models import Poster, Conference
 from .forms import PDFForm
 from .utils import email_log
 
@@ -24,9 +25,14 @@ USR_EXISTING_FILE = "Your poster has been uploaded already. You may update it by
 #TODO: change to generic views
 
 @cache_page(settings.CACHE_TTL, cache='index')
-def index(request):
-    poster_list = Poster.objects.filter(active=True).prefetch_related('authors')
-    context = {'poster_list': poster_list}
+def index(request, conference_id=None):
+    if conference_id is None:
+        poster_list = Poster.objects.filter(active=True).order_by('-pub_date')[:256].prefetch_related('authors')
+        context = {'poster_list': poster_list}
+    else:
+        conference = get_object_or_404(Conference, slug=conference_id)
+        poster_list = Poster.objects.filter(active=True, conference=conference).prefetch_related('authors')
+        context = {'poster_list': poster_list, 'conference': conference}
     return render(request, 'pages/index.html', context)
 
 def detail(request, slug):
@@ -51,6 +57,7 @@ def upload(request, access_key):
                 try:
                     poster.generate_preview()
                     poster.active = True
+                    poster.pub_date = date.today()
                     poster.save()
                     messages.success(request, USR_SUCCESS)
                     log_email.add_message('INFO: conversion successful')
@@ -77,6 +84,11 @@ def upload(request, access_key):
 
     form.active = False
     return render(request, 'pages/upload.html', {'form': form, 'poster': poster})
+
+@cache_page(3600, cache='default')
+def sitemap(request):
+    poster_list = Poster.objects.filter(active=True).order_by('-pub_date')
+    return render(request, 'sitemap.xml', {'poster_list': poster_list}, content_type='text/xml')
 
 def rss(request):
     pass

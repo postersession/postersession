@@ -1,0 +1,3 @@
+{% load fullurl i18n %}Sitemap: {% fullurl 'sitemap' %}
+User-agent: *
+Disallow: /upload/

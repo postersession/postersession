@@ -1,0 +1,15 @@
+{% load fullurl i18n %}<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>{% fullurl 'home' %}</loc>
+      <changefreq>weekly</changefreq>
+      <priority>1</priority>
+   </url>
+   {% for poster in poster_list %}
+   <url>
+      <loc>{% fullurl 'detail' poster.slug %}</loc>
+      <lastmod>{{ poster.pub_date|date:"Y-m-d" }}</lastmod>
+      <priority>1</priority>
+   </url>
+   {% endfor %}
+</urlset>
