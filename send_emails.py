@@ -31,7 +31,7 @@ def send_email(paper, num_authors=99):
         if poster_author.email_sent:
             logger.warning('Not re-sending %s (%s)' % (author, poster))
             continue
-        if poster_author.exclude:
+        if poster_author.exclude or not author.email:
             logger.warning('excluding %s (%s)' % (author, poster))
             continue
         filtered_authors.append(author)
@@ -39,11 +39,11 @@ def send_email(paper, num_authors=99):
     body = u"""
 Hello {author_names},
 
-You presented the paper "{title}" at a poster session at ICLR'19.
+You presented the paper "{title}" at a poster session at {conference}.
 
 Poster sessions are a great way for researchers to gain a quick overview of the current state of their field. It would be great if this was available even to people who were not able to attend the conference.
 
-We hope to get all the ICLR posters available online, creating a "virtual poster session".
+We hope to get all the {conference} posters available online, creating a "virtual poster session".
 
 We just need a minute of your time -- please visit this link, where you can upload a PDF of your poster:
 
@@ -60,10 +60,11 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain)
         author_names=u", ".join([author.name for author in filtered_authors]),
         upload_key=poster.access_key,
         title=poster.title,
+        conference=str(poster.conference),
         to=[str(author) for author in filtered_authors])
 
     msg = EmailMultiAlternatives(
-        subject="Share your ICLR poster on postersession.ai",
+        subject="Share your %s poster on postersession.ai" % poster.conference,
         body=body,
         from_email="postersession.ai <submissions@postersession.ai>",
         to=[str(author) for author in filtered_authors],
@@ -88,7 +89,7 @@ Jonathan Binas (Mila) and Avital Oliver (Google Brain)
 
 
 def send_emails(start_id=0, end_id=1, send=False):
-    with open('iclr19.json') as f:
+    with open('data.json') as f:
         papers = json.load(f)
         for i, paper in enumerate(papers[start_id:end_id]):
             logger.info('processing paper %s' % (i + start_id))
