@@ -19,6 +19,7 @@ def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
             conference=conference,
             title=paper['title'],
             external_id=paper['id'],
+            author_names=paper['id'] if 'id' in paper else None,
             )
         if created:
             poster.access_key = str(uuid.uuid4())

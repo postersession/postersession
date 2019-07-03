@@ -33,6 +33,7 @@ class Poster(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField('date published', default=date.today)
     authors = models.ManyToManyField(Author, through='PosterAuthor')
+    author_names = models.CharField(max_length=1024, blank=True, null=True)
     access_key = models.CharField(max_length=256, unique=True)
     external_id = models.CharField(max_length=80, blank=True)
     active = models.BooleanField(default=False)
@@ -45,6 +46,7 @@ class Poster(models.Model):
                     content_types=['application/pdf'])
 
     def author_list(self):
+        # xcxc -- this is called from a lot of places. check which should instead call author_list_names
         return [obj.author for obj in PosterAuthor.objects.filter(poster=self).order_by('position')]
 
     def generate_preview(self):

@@ -14,7 +14,7 @@
     <meta property="og:site_name" content="Postersession.ai Machine Learning Conference Posters" />
     <meta property="og:image" content="{{ poster.preview_small.url }}" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:description" content="Poster: {{ poster.title }} by {% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %} ({{ poster.conference }})" />
+    <meta name="twitter:description" content="Poster: {{ poster.title }} by {% if poster.author_names %}{{poster.author_names}}.{ %else %}{% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %}{{% endif %}} ({{ poster.conference }})" />
     <meta name="twitter:title" content="Poster: {{ poster.title }} by {% for author in poster.author_list|slice:'1' %}{{author.name}}{% endfor %} et al." />
     <meta name="twitter:image" content="{{ poster.preview_small.url }}" />
 {% endblock %}
@@ -22,7 +22,17 @@
 
 {% block content %}
 <h1>{{ poster.title }}</h1>
-<p>{% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}{{ poster.conference }}. &nbsp;{% if poster.pdf %}(<a href='{{ poster.pdf.url }}'><b>Poster PDF</b></a>){% endif %}</p>
+<p>
+{% if poster.author_names %}
+{{poster.author_names}}.
+
+{% else %}
+
+{% for author in poster.author_list %}{{ author.name }}{% if forloop.last %}. {% else %}, {% endif %}{% endfor %}
+
+{% endif %}
+
+{{ poster.conference }}. &nbsp;{% if poster.pdf %}(<a href='{{ poster.pdf.url }}'><b>Poster PDF</b></a>){% endif %}</p>
 
 {% if poster.preview_large %}<img src="{{ poster.preview_large.url }}" class="img-fluid">{% endif %}
 {% endblock %}
