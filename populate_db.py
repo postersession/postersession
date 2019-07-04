@@ -1,6 +1,7 @@
 import json
 import hashlib
 import base64
+import sys
 
 from posters.models import Conference, Poster, Author, PosterAuthor
 
@@ -9,7 +10,7 @@ import uuid
 
 def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
 
-    conference, _ = Conference.objects.get_or_create(name=conference_name)
+    conference = Conference.objects.get(name=conference_name)
 
     with open(input_file) as f:
         papers = json.load(f)
@@ -31,5 +32,6 @@ def populate_db(input_file='iclr19.json', conference_name='ICLR 2019'):
 
 if __name__ == '__main__':
 
-    populate_db()
+    print('importing', sys.argv[-2], sys.argv[-1])
+    populate_db(sys.argv[-2], sys.argv[-1])
 
