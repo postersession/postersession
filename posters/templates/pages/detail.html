@@ -22,7 +22,7 @@
 
 {% block content %}
 <h1>{{ poster.title }}</h1>
-<p>{{ poster.author_list }}. {{ poster.conference }}. {% if poster.pdf %}(<a href='{{ poster.pdf.url }}'><b>Poster PDF</b></a>){% endif %}</p>
+<p>{{ poster.author_list }}. {{ poster.conference }}. {% if poster.pdf or poster.ext_url %} ({% if poster.pdf %}<a target='_blank' href='{{ poster.pdf.url }}'><b>Poster PDF</b></a>{% endif %}{% if poster.pdf and poster.ext_url %} &middot; {% endif %}{% if poster.ext_url %}<a target='_blank' href='{{ poster.ext_url }}'><i class='fas fa-external-link-square-alt'></i> <b>Paper</b></a>{% endif %}){% endif %}</p>
 
 {% if poster.preview_large %}<img src="{{ poster.preview_large.url }}" class="img-fluid">{% endif %}
 {% endblock %}

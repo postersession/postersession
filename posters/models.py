@@ -16,6 +16,7 @@ class Conference(models.Model):
     date_to = models.DateField(default=date.today)
     location = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=256, blank=True)
+    link_url = models.URLField(max_length=256, blank=True)
 
     def __str__(self):
         return self.name
@@ -109,6 +110,15 @@ class Poster(models.Model):
     def ref_long(self):
         ''' poster title, all authors, conference name '''
         return ' '.join([self.title + '.', str(self.author_list), '(' + self.conference.name + ')'])
+
+    @property
+    def ext_url(self):
+        ''' link to external paper '''
+        eid = self.external_id.split('/')[-1]
+        url = self.conference.link_url
+        if not eid or not url:
+            return None
+        return url.format(id=eid)
 
     def get_absolute_url(self):
         return reverse('detail', args=[self.slug])
