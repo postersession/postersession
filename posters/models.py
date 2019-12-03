@@ -69,7 +69,7 @@ class Poster(models.Model):
     pub_date = models.DateField('date published', default=date.today)
     authors = models.ManyToManyField(Author, through='PosterAuthor')
     access_key = models.CharField(max_length=256, unique=True)
-    external_id = models.CharField(max_length=80, blank=True)
+    external_id = models.CharField(max_length=256, blank=True)
     active = models.BooleanField(default=False)
     preview_small = models.ImageField(blank=True, upload_to=unique_upload)
     preview_large = models.ImageField(blank=True, upload_to=unique_upload)
