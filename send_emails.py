@@ -39,9 +39,9 @@ def send_email(paper, num_authors=99):
     body = u"""
 Hello {author_names},
 
-You presented the paper "{title}" at a poster session at {conference}.
+You are presenting the paper "{title}" at a poster session at {conference}.
 
-Poster sessions are a great way for researchers to gain a quick overview of the current state of their field. It would be great if this was available even to people who were not able to attend the conference.
+Poster sessions are a great way for researchers to gain a quick overview of the current state of their field. It would be great if this was available even to people who are not able to attend the conference.
 
 We hope to get all the {conference} posters available online, creating a "virtual poster session".
 
@@ -49,7 +49,7 @@ We just need a minute of your time -- please visit this link, where you can uplo
 
 https://postersession.ai/upload/{upload_key}
 
-All posters will be made public on https://postersession.ai/
+All posters will be made public on https://postersession.ai/.
 Please let us know if you have any questions!
 
 Thanks a lot,
