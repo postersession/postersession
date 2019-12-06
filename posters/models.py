@@ -26,6 +26,11 @@ class Author(models.Model):
     name = models.CharField(max_length=256)
     email = models.EmailField(blank=True, null=True)
 
+    @property
+    def posters(self):
+        posters = [p.poster for p in PosterAuthor.objects.filter(author=self)]
+        return posters
+
     def __str__(self):
         return self.name + ' <' + str(self.email) + '>'
 
