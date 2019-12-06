@@ -12,6 +12,11 @@
   <p>
     {{ poster.author_list }}. {{ poster.conference }}.
   </p>
+  {% if poster.preview_small %}
+  <p>
+    <img src="{{ poster.preview_small.url }}" class="img-fluid">
+  </p>
+  {% endif %}
   <form method="post" enctype="multipart/form-data" id="upload">
     <div class="form-group">
     {% csrf_token %}
